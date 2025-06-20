@@ -1,9 +1,9 @@
 import streamlit as st
-from databases.slot_db import initialize_db,generate_daily_slots
+from databasemanagers.slot_db import initialize_slot_db,generate_daily_slots
 
 # ✅ Only run once per Streamlit session
 if "db_initialized" not in st.session_state:
-    initialize_db()
+    initialize_slot_db()
     st.session_state.db_initialized = True
 
 # ✅ Only run once per Streamlit session

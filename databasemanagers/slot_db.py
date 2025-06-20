@@ -1,9 +1,3 @@
-from datetime import datetime
-from typing import List
-import sqlite3
-
-
-
 import sqlite3
 from datetime import datetime, timedelta
 
@@ -13,7 +7,7 @@ slot_cursor = slot_conn.cursor()
 
 
 
-def initialize_db():
+def initialize_slot_db():
     conn = sqlite3.connect("slot_status.db")
     cursor = conn.cursor()
 
