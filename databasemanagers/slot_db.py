@@ -1,23 +1,24 @@
+# slot_db.py
+
 import sqlite3
+import os
 from datetime import datetime, timedelta
 
-# Connect to SQLite database
-slot_conn = sqlite3.connect("slot_status.db")
-slot_cursor = slot_conn.cursor()
+# Set DB path
+base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+db_path = os.path.join(base_dir, "databases", "slot_status.db")
+os.makedirs(os.path.dirname(db_path), exist_ok=True)
 
-
+# Connection & Cursor (global for reuse)
+conn = sqlite3.connect(db_path)
+cursor = conn.cursor()
 
 def initialize_slot_db():
-    conn = sqlite3.connect("slot_status.db")
-    cursor = conn.cursor()
-
-    # Check if table exists
+    global cursor
     cursor.execute("""
         SELECT name FROM sqlite_master WHERE type='table' AND name='slots';
     """)
-    table_exists = cursor.fetchone()
-
-    if not table_exists:
+    if not cursor.fetchone():
         cursor.execute('''
             CREATE TABLE slots (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -26,31 +27,21 @@ def initialize_slot_db():
                 date TEXT NOT NULL
             )
         ''')
+        print("Db initialized-slot")
         conn.commit()
-    conn.close()
-
-
-
-
-
-
 
 def create_slot(slot, status, date):
-    slot_cursor.execute('INSERT INTO slots (slot, status, date) VALUES (?, ?, ?)', (slot, status, date))
-    slot_conn.commit()
+    cursor.execute('INSERT INTO slots (slot, status, date) VALUES (?, ?, ?)', (slot, status, date))
+    conn.commit()
     print(f"✅ Slot '{slot}' created for {date} with status {status}")
-
 
 def generate_daily_slots():
     today = datetime.today().date().isoformat()
-
-    # Check if today's slots are already created
-    slot_cursor.execute('SELECT COUNT(*) FROM slots WHERE date = ?', (today,))
-    if slot_cursor.fetchone()[0] > 0:
+    cursor.execute('SELECT COUNT(*) FROM slots WHERE date = ?', (today,))
+    if cursor.fetchone()[0] > 0:
         print(f"🟢 Slots for {today} already exist.")
         return
 
-    # Generate 20-minute slots from 9:00 AM to 5:00 PM
     print(f"🛠️ Generating slots for {today}...")
     start_time = datetime.strptime("09:00", "%H:%M")
     end_time = datetime.strptime("17:00", "%H:%M")
@@ -62,3 +53,13 @@ def generate_daily_slots():
         start_time += duration
 
     print("✅ Daily slot generation complete.")
+
+def close_connection():
+    conn.close()
+    print("🔒 DB connection closed.")
+
+# ✅ Wrapper to run everything ONCE at startup
+def run_startup_tasks():
+    initialize_slot_db()
+    generate_daily_slots()
+    close_connection()

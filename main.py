@@ -1,12 +1,14 @@
 import streamlit as st
-from databasemanagers.slot_db import initialize_slot_db,generate_daily_slots
+from databasemanagers.slot_db import run_startup_tasks
+from databasemanagers.medicine_db import initialize_medicine_db,generate_basic_stock
+from tools.medicine_inventory_tools import list_all_medicine
+from tools.scheduler_tools import view_available_slots
 
 # ✅ Only run once per Streamlit session
-if "db_initialized" not in st.session_state:
-    initialize_slot_db()
-    st.session_state.db_initialized = True
+if "run_startup_tasks" not in st.session_state:
+    run_startup_tasks()
+    st.session_state.run_startup_tasks = True
 
-# ✅ Only run once per Streamlit session
-if "daily_slots_generated" not in st.session_state:
-    generate_daily_slots()
-    st.session_state.daily_slots_generated = True
+
+lst = list_all_medicine.invoke({})
+

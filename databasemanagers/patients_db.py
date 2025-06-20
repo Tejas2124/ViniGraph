@@ -1,12 +1,9 @@
 import  os,sqlite3
-
+from databasemanagers.connection import get_db_path
 
 def initialize_patient_db():
-    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    db_path = os.path.join(base_dir, "databases", "patients.db")
 
-    # Ensure the 'databases' directory exists
-    os.makedirs(os.path.dirname(db_path), exist_ok=True)
+    db_path = get_db_path('patients')
 
     # Connect to the database
     patient_conn = sqlite3.connect(db_path)
@@ -33,4 +30,3 @@ def initialize_patient_db():
         patient_conn.commit()
     patient_conn.close()
 
-initialize_patient_db()

@@ -1,17 +1,14 @@
 import os
 import sqlite3
+from databasemanagers.connection import get_db_path
+from prompts.medicine_inventory_prompt import medicine_inventory_system_prompt
 
+path = get_db_path('medicine')
+medicine_conn = sqlite3.connect(path)
+medicine_cursor = medicine_conn.cursor()
 
 def initialize_medicine_db():
-    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    db_path = os.path.join(base_dir, "databases", "medicine.db")
 
-    # Ensure the 'databases' directory exists
-    os.makedirs(os.path.dirname(db_path), exist_ok=True)
-
-    # Connect to the database
-    medicine_conn = sqlite3.connect(db_path)
-    medicine_cursor = medicine_conn.cursor()
 
     medicine_cursor.execute("""
      SELECT name FROM sqlite_master WHERE type='table' AND name='Stock';
@@ -40,6 +37,8 @@ def generate_basic_stock():
 
     medicine_cursor.execute("insert into Stock (id,medicine,stock) VALUES (1,'PARACETAMOL',20),(2,'CETRIZINE',20),(3,'COMBIFLAM',20),(4,'SACNOVA',20),(5,'PDAP',20),(6,'DICLOFANAC',20);")
     print("Basic Stock Generated ")
+
+
 
 
 
