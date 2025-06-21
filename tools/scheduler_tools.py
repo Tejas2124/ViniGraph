@@ -3,7 +3,7 @@ from langchain.tools import tool
 from datetime import datetime
 from typing import List
 import sqlite3
-import os
+
 
 
 db_path = get_db_path('slot_status')
