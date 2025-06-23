@@ -7,4 +7,7 @@ load_dotenv()
 
 
 tools = [verify_patient_data]
-agent = create_react_agent(model=MODEL,tools=tools,prompt=dataverifier_system_prompt)
+data_verifier = create_react_agent(model=MODEL,tools=tools,prompt=dataverifier_system_prompt)
+
+
+

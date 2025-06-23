@@ -7,8 +7,6 @@ import sqlite3
 
 
 db_path = get_db_path('slot_status')
-
-# Connection & Cursor (global for reuse)
 conn = sqlite3.connect(db_path)
 cursor = conn.cursor()
 
@@ -18,9 +16,9 @@ cursor = conn.cursor()
 def book_slot(slot_id: int):
     """Books available slot on today using slot_id"""
     # These should be already defined in your file:
-    global conn,cursor
-    slot_conn = conn
-    slot_cursor = cursor
+    db_path = get_db_path('slot_status')
+    slot_conn = sqlite3.connect(db_path)
+    slot_cursor = conn.cursor()
     today = datetime.today().date().isoformat()
     slot_cursor.execute('SELECT status FROM slots WHERE id = ? AND date = ?', (slot_id, today))
     row = slot_cursor.fetchone()
@@ -37,9 +35,9 @@ def book_slot(slot_id: int):
 def view_available_slots() -> List:
     """Lists today's available slots"""
     # These should be already defined in your file:
-    global conn,cursor
-    slot_conn = conn
-    slot_cursor = cursor
+    db_path = get_db_path('slot_status')
+    slot_conn = sqlite3.connect(db_path)
+    slot_cursor = slot_conn.cursor()
     today = datetime.today().date().isoformat()
     slot_cursor.execute('SELECT id, slot FROM slots WHERE status = 0 AND date = ?', (today,))
     slots = slot_cursor.fetchall()
