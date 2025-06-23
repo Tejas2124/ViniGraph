@@ -7,5 +7,8 @@ load_dotenv()
 
 
 tools = [insert_patient_from_dict,get_patient_details]
-case_generator = create_react_agent(model=MODEL,tools=tools,prompt=case_generation_system_prompt)
+case_generator = create_react_agent(model=MODEL,
+                                    tools=tools,
+                                    prompt=case_generation_system_prompt,
+                                    name='case_generator')
 

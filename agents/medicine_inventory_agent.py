@@ -7,4 +7,7 @@ load_dotenv()
 
 
 tools = [list_all_medicine,get_medicine,add_medicine]
-medicine_inventory = create_react_agent(model=MODEL,tools=tools,prompt=medicine_inventory_system_prompt)
+medicine_inventory = create_react_agent(model=MODEL,
+                                        tools=tools,
+                                        prompt=medicine_inventory_system_prompt,
+                                        name='medicine_inventory')
